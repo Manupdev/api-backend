@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use('/api/user', require("./src/routes/usuarios.routes"))
-app.use('/api/contacts', require("./src/routes/contactos.routes"))
+app.use('/api/mail', require("./src/routes/mail.routes"))
 
 
 app.get("/j", (req, res) => {

@@ -1,99 +1,97 @@
 let instance = null;
-require('dotenv').config();
 const jwt = require("jsonwebtoken");
-const UsuariosService = require("../services/usuarios.service");
-const AuthService = require('../services/auth.service');
+const userService = require("../services/usuarios.service");
+const authService = require("../services/auth.service");
 
-class UsuariosController {
+class UserController {
 
-  static getInstance() {
-    if (!instance) {
-      return new UsuariosController();
-    }
-    return instance;
-  }
-
-  async getUsuarios(req, res) {
-    try {
-      const users = await UsuariosService.getUsers();
-      return res.status(200).json(users);
-    } catch (err) {
-      console.error(err);
-      return res.status(500).json({
-    method: "getUsers",
-    message: err,
-      });
-    }
-  }
-
-  async getUsuarioById(req, res) {
-    try {
-      const id = req.params.id;
-      let user = await UsuariosService.getUserById(id);
-      if (!user) {
-    return res.status(404).json({
-      method: "getUsuarioById",
-      message: "Not Found",
-    });
+    static getInstance() {
+        if (!instance) {
+          return new UserController();
+        }
+        return instance;
       }
-      return res.status(200).json(user);
-    } catch (err) {
-      console.error(err);
-      return res.status(500).json({
-    method: "getUsuarioById",
-    message: err,
-      });
+
+    async createUser(req,res) {
+        try {
+            let newUser = await userService.createUser(req.body);
+            return res.status(201).json({
+                estado: newUser,
+              });
+        }catch (err){
+            console.log('Error, usuario ya existente')
+            return res.status(500).json({
+                method: "createUsuario",
+                message: err.message,
+              });
+        }
     }
-  }
 
-  async createUsuario(req, res) {
-    try {
-      let newUser = await UsuariosService.createUser(req.body);
-
-      return res.status(201).json({
-    message: "Created!",
-    usuario: newUser,
-      });
-    } catch (err) {
-      console.error(err);
-      return res.status(500).json({
-    method: "createUsuario",
-    message: err.message,
-      });
+    async getUsers(req, res){
+        try{
+            const users = await userService.getUsers();
+            return res.status(200).json(users);
+        } catch(err){
+            console.log("error1")
+        }
     }
-  }
 
-  async login(req, res) {
-    try {
-      const { email, password } = req.body;
-      let isUserRegistered = await AuthService.hasValidCredentials(email, password);
-      if (isUserRegistered) {
-
-    const user = await UsuariosService.getUserByEmail(email);
-
-    const token = jwt.sign(user.toJSON(), process.env.PRIVATE_KEY, {
-      expiresIn: "1d",
-    });
-
-    return res.status(200).json({
-      status: 200,
-      token,
-      message: "Token created successfully."
-    });
-
-      } else {
-    return res.status(401).json({
-      message: "Unauthorized.",
-    });
-      }
-    } catch (err) {
-      console.error(err);
-      return res.status(500).json({
-    method: "login",
-    message: err.message,
-      });
+    async getUserByMail(req, res){
+        try{
+            const email = req.params.email
+            const user = await userService.getUserByMail(email);
+            return res.status(200).json(user);
+        } catch(err){
+            console.log("error3")
+        }
     }
-  }
-}
 
-module.exports = UsuariosController.getInstance();
+    async login(req, res){
+        try{
+            const { email, password } = req.body;
+            let isUserRegistered = await authService.hasValidCredentials(email, password);
+
+            if (isUserRegistered){
+                const user = await userService.getUserByMail(email);
+
+                const token = jwt.sign(user.toJSON(), process.env.PRIVATE_KEY, {
+                expiresIn: "1d",
+                });
+
+                return res.status(200).json({
+                status: 200,
+                token,
+                estado: true,
+                message: "Token created successfully."
+                });
+            } else {
+                return res.status(200).json({
+                estado: false,  
+                message: "Unauthorized.",
+                });
+              }
+            } catch (err) {
+              console.error(err);
+              return res.status(500).json({
+                method: "login",
+                message: err.message,
+              });
+            }
+        }
+
+    async getCountUsers(req, res){
+        try{
+            const count = await userService.getCountUser();
+            return res.status(200).json({
+                estadoCountUser: count
+            });
+        }catch(err){
+            return res.status(200).json(err);
+        }
+        
+    }
+
+    }
+
+
+module.exports = UserController.getInstance();

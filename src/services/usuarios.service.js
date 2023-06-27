@@ -1,55 +1,73 @@
-const UsuariosModel = require('../models/Usuarios');
+const userModel = require('../models/Usuarios');
 const bcrypt = require('bcrypt');
 
-class UsuariosService{
-
-    async getUsers() {
-        try {
-          const users = await UsuariosModel.find();
-          return users;
-        } catch (err) {
-          console.error(err);
-          throw new Error("Error in getUsers Service");
+class UserService {
+    async createUser(user){
+        try{
+            let isRegistred = await userModel.findOne({email:user.email})
+            console.log(isRegistred)
+            if (isRegistred){
+                throw new Error("User already registred")
+            }else{
+                const count = await userModel.countDocuments();
+                console.log(count)
+                if (count===0){
+                    user.password = bcrypt.hashSync(user.password, process.env.SALT)
+                    await userModel.create(user);
+                    return true;
+                }else{
+                    return false
+                }
+                
+            }
+        }catch(err){
+            console.log(err)
+            throw new Error("Error in createUser Service");
         }
-      }
+    }
 
-      async getUserById(id) {
-        try {
-          let user = await UsuariosModel.findOne({_id:id});
-          return user;
-        } catch (err) {
-          console.error(err);
-          throw new Error("Error in getUserById Service");
+    async getUsers(){
+        try{
+            const users = await userModel.find()
+            return users;
+        } catch(err){
+            throw new error ("Error in getUsers service")
         }
-      }
+    }
 
-      async getUserByEmail(email) {
-        try {
-          let user = await UsuariosModel.findOne({email});
-          return user;
-        } catch (err) {
-          console.error(err);
-          throw new Error("Error in getUserById Service");
-        }
-      }
-
-      async createUser(user) {
-        try {
-
-          let isUserRegistered = await UsuariosModel.findOne({email:user.email});
-          if(isUserRegistered){
-            throw new Error("User already registered");
-          }
-          else{
-            user.password = bcrypt.hashSync(user.password,process.env.SALT);
-            await UsuariosModel.create(user);
+    async getUserByID(id){
+        try{
+            const user = await userModel.findOne({_id:id});
             return user;
+        }catch(err){
+            throw new error ("Error in getUserByID service")
         }
-        } catch (err) {
-          console.error(err);
-          throw new Error("Error in createUser Service");
+    }
+
+    async getUserByMail(email){
+        try{
+            const user = await userModel.findOne({email:email});
+            return user;
+        }catch(err){
+            throw new error ("Error in getUserByMail service")
         }
-      }
+    }
+
+    async getCountUser(){
+        try{
+            const count = await userModel.countDocuments();
+            if (count>0){
+                return count;
+                return true;
+            }else{
+                return false;
+            }
+            
+        }catch(err){
+            throw new error ("Error in getCountUser service")
+        }
+    }
+    
 }
 
-module.exports = new UsuariosService();
+module.exports = new UserService();

@@ -1,33 +1,18 @@
 const { Router } = require("express");
-const { check } = require("express-validator");
-const usuariosController = require("../controllers/usuarios.controller");
-const checkFields = require("../middlewares/validateFields");
+
+const UserController = require("../controllers/usuarios.controller");
 
 const router = Router();
+const validateJwt = require("../middlewares/jwtValidator")
 
-router.get("/", usuariosController.getUsuarios); //GET USUARIOS
+router.post('/create', UserController.createUser)
 
-router.post(
-  "/",
-  [
-    check("name").not().isEmpty(),
-    check("lastname").not().isEmpty(),
-    check("usuario").not().isEmpty(),
-    check("password").not().isEmpty(),
-    checkFields,
-  ],
-  usuariosController.createUsuario
-); //POST USUARIOS
+router.get('/', validateJwt, UserController.getUsers)
 
-router.get("/:id", usuariosController.getUsuarioById); //GET USUARIOS BY ID
-router.post(
-  "/login",
-  [
-    check("usuario").not().isEmpty(),
-    check("password").not().isEmpty(),
-    checkFields,
-  ],
-  usuariosController.login
-);
+router.get('/email/:email', UserController.getUserByMail)
+
+router.post('/login', UserController.login)
+
+router.get('/cant', UserController.getCountUsers)
 
 module.exports = router;
