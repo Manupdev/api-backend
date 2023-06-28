@@ -12,22 +12,13 @@ class MailService {
 
     async getMails(){
         try{
-            const mails = await mailModel.find( {estado: true}); //poner solo los que esten en True
+            const mails = await mailModel.find();
             return mails;
         }catch(err){
             console.log(err)
         }
     }
 
-    async validateMail(_id){
-        try{
-            await mailModel.updateOne({_id: _id}, {$set: {estado: true}})
-            return _id
-        }catch(err){
-            console.log(err)
-        }
-        
-    }
 }
 
 module.exports = new MailService();

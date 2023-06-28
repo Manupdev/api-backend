@@ -6,8 +6,8 @@ const validateJwt = require("../middlewares/jwtValidator")
 const router = Router();
 
 router.post('/create', MailController.createMail)
-router.get('/getMails', MailController.getMails)
-router.put('/validate/:id', MailController.validateMail)
+router.get('/getMails', validateJwt , MailController.getMails)
+
 
 
 module.exports = router;

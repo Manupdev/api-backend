@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 const MailSchema = new Schema({
     name:String,
     email:String,
-    nrotelefono:String,
+    telefono:String,
 });
 
 const Mail = mongoose.model('Mail', MailSchema);

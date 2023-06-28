@@ -19,7 +19,7 @@ class UserController {
                 estado: newUser,
               });
         }catch (err){
-            console.log('Error, usuario ya existente')
+            console.log('El usuario ya existe')
             return res.status(500).json({
                 method: "createUsuario",
                 message: err.message,
@@ -32,7 +32,7 @@ class UserController {
             const users = await userService.getUsers();
             return res.status(200).json(users);
         } catch(err){
-            console.log("error1")
+            console.log("errorgetU")
         }
     }
 
@@ -42,7 +42,7 @@ class UserController {
             const user = await userService.getUserByMail(email);
             return res.status(200).json(user);
         } catch(err){
-            console.log("error3")
+            console.log("errorgetuM")
         }
     }
 
@@ -79,17 +79,6 @@ class UserController {
             }
         }
 
-    async getCountUsers(req, res){
-        try{
-            const count = await userService.getCountUser();
-            return res.status(200).json({
-                estadoCountUser: count
-            });
-        }catch(err){
-            return res.status(200).json(err);
-        }
-        
-    }
 
     }
 

@@ -7,7 +7,7 @@ class UserService {
             let isRegistred = await userModel.findOne({email:user.email})
             console.log(isRegistred)
             if (isRegistred){
-                throw new Error("User already registred")
+                throw new Error("Error")
             }else{
                 const count = await userModel.countDocuments();
                 console.log(count)
@@ -22,7 +22,7 @@ class UserService {
             }
         }catch(err){
             console.log(err)
-            throw new Error("Error in createUser Service");
+            throw new Error("Error crearU");
         }
     }
 
@@ -31,42 +31,22 @@ class UserService {
             const users = await userModel.find()
             return users;
         } catch(err){
-            throw new error ("Error in getUsers service")
+            throw new error ("Error getU")
         }
     }
 
-    async getUserByID(id){
-        try{
-            const user = await userModel.findOne({_id:id});
-            return user;
-        }catch(err){
-            throw new error ("Error in getUserByID service")
-        }
-    }
+    
 
     async getUserByMail(email){
         try{
             const user = await userModel.findOne({email:email});
             return user;
         }catch(err){
-            throw new error ("Error in getUserByMail service")
+            throw new error ("Error getuM")
         }
     }
 
-    async getCountUser(){
-        try{
-            const count = await userModel.countDocuments();
-            if (count>0){
-                return count;
-                return true;
-            }else{
-                return false;
-            }
-            
-        }catch(err){
-            throw new error ("Error in getCountUser service")
-        }
-    }
+    
     
 }
 

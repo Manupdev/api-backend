@@ -14,7 +14,7 @@ class MailController {
         try{
             let newMail = await mailService.createMail(req.body);
             return res.status(201).json({
-                message: "Created!",
+                message: "Contacto Creado! ",
                 usuario: newMail,
               });
         }catch(err){
@@ -31,16 +31,7 @@ class MailController {
       }
     }
 
-    async validateMail(req, res){
-      try{
-        const id = await mailService.validateMail(req.params.id)
-        return res.status(200).json(id)
-      }catch(err){
-        console.log(err)
-      }
-      
     
-    }
 }
 
 module.exports = MailController.getInstance();
